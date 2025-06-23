@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
+        cloc \
         curl \
         git \
         jq \
@@ -13,7 +14,9 @@ RUN apt-get update && \
         moreutils \
         opam \
         pkg-config \
+        python3 \
         python3-distutils \
+        python3-pip \
         unzip \
         wget \
     ;
@@ -39,6 +42,9 @@ ENV PATH="/root/z3/bin:${PATH}"
 RUN mkdir -p /root/cvc5
 RUN /root/arrival/cranelift/isle/veri/veri/script/install/cvc5.sh -i /root/cvc5
 ENV PATH="/root/cvc5/bin:${PATH}"
+
+# Install evaluation tools
+RUN pip3 install matplotlib==3.9.2
 
 # Check
 RUN asli --version && \
