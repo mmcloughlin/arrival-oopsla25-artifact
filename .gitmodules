@@ -2,3 +2,7 @@
 	path = arrival
 	url = git@github.com:mmcloughlin/veriisle-wasmtime.git
 	branch = veriisle
+[submodule "symaslp"]
+	path = symaslp
+	url = https://github.com/mmcloughlin/aslp.git
+	branch = dev
