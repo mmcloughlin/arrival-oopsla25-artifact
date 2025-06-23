@@ -36,3 +36,8 @@ ENV PATH="/root/z3/bin:${PATH}"
 RUN mkdir -p /root/cvc5
 RUN /root/arrival/cranelift/isle/veri/veri/script/install/cvc5.sh -i /root/cvc5
 ENV PATH="/root/cvc5/bin:${PATH}"
+
+# Check
+RUN asli --version && \
+    z3 --version && \
+    cvc5 --version
