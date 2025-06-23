@@ -23,18 +23,57 @@ TODO
 
 ## Getting Started Guide
 
-> In the Getting Started Guide, give instructions for setup and basic testing.
-> List any software requirements and/or passwords needed to access the artifact.
-> The instructions should take roughly 30 minutes to complete. Reviewers will
-> follow the guide during an initial kick-the-tires phase and report issues as
-> they arise.
->
-> The Getting Started Guide should be as simple as possible, and yet it should
-> stress the key elements of your artifact. Anyone who has followed the Getting
-> Started Guide should have no technical difficulties with the rest of your
-> artifact.
+### Setup [est. 10-30 minutes]
 
-TODO
+We provide our artifact as a
+[Docker](https://docs.docker.com/engine/installation/) instance. Please install
+Docker based on your system's instructions.
+
+Build the `arrival` Docker image from the root of the artifact as follows:
+
+```
+docker build -t arrival .
+```
+
+### Basic Test [est. 5 minutes]
+
+Run the container:
+```
+docker run -it arrival
+```
+
+Verify a simple lowering of the integer addition `iadd` instruction, execute
+within the container:
+```
+./script/veri.sh -- --filter rule:iadd_base_case
+```
+
+This will build the verifier, and run it against all expansions of the
+`iadd_base_case` rule. In this case there is only one expansion, and four
+applicable type instantiations. You should see output similar to:
+
+```
+#111    iadd_base_case
+        iadd({bits: int}, bv 8, bv 8) -> bv 8
+                type solution status = solved
+                applicability = applicable
+                verification = success
+        iadd({bits: int}, bv 16, bv 16) -> bv 16
+                type solution status = solved
+                applicability = applicable
+                verification = success
+        iadd({bits: int}, bv 32, bv 32) -> bv 32
+                type solution status = solved
+                applicability = applicable
+                verification = success
+        iadd({bits: int}, bv 64, bv 64) -> bv 64
+                type solution status = solved
+                applicability = applicable
+                verification = success
+        iadd({bits: int}, bv 128, bv 128) -> bv 128
+                type solution status = solved
+                applicability = inapplicable
+```
 
 ## Step by Step Instructions
 
