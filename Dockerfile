@@ -1,13 +1,19 @@
 FROM ubuntu:22.04
 
 # Install system dependencies
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
+        curl \
         git \
         unzip \
         wget \
     ;
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain 1.85.0 -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install Arrival
 COPY arrival /root/arrival
