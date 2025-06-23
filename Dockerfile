@@ -8,6 +8,7 @@ RUN apt-get update && \
         curl \
         git \
         libgmp-dev \
+        libssl-dev \
         opam \
         pkg-config \
         python3-distutils \
