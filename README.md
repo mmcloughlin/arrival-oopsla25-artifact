@@ -148,7 +148,7 @@ trigger the bug.
 
 TODO
 
-### Generate ISA Specifications [est. ??? mins]
+### Generate ISA Specifications [est. 10 mins]
 
 Run the container:
 ```
