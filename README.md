@@ -14,12 +14,10 @@ TODO
 
 ## Hardware Dependencies
 
-> In the Hardware Dependencies section, describe the hardware required to evaluate
-> the artifact. If the artifact requires specific hardware (e.g., many cores, disk
-> space, GPUs, specific processors), please provide instructions on how to gain
-> access to the hardware. Keep in mind that reviewers must remain anonymous.
-
-TODO
+This artifact requires a single x86 host machine. While there is no strict
+requirement for many cores, the Arrival verifier parallelizes over available
+cores, and reviewers will have a better time with at least 8 and ideally more
+cores.
 
 ## Getting Started Guide
 
