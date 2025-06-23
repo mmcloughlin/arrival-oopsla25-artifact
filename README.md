@@ -89,6 +89,20 @@ applicable type instantiations. You should see output similar to:
 > those as well. Ideally, artifacts should include sample outputs and logs for
 > comparison.
 
+### Reproduce `sdiv` Bug [est. ??? mins]
+
+TODO
+
+### Verify AArch64 Instruction Selection Rules [est. ??? mins]
+
+TODO
+
+### Generate ISA Specifications [est. ??? mins]
+
+TODO
+
+### Run Evaluation Analysis [est. ??? mins]
+
 TODO
 
 ## Reusability Guide
