@@ -1,0 +1,220 @@
+commit fdf2e56cf56e5956f2a8b9a675ce9ef168af5414
+Author: Alexa VanHattum <amv94@cornell.edu>
+Date:   Fri Nov 1 19:44:27 2024 -0400
+
+    aarch64: fix narrow sdiv with additional left shift and add filetest (#236)
+    
+    Fix the intmin checking of narrow `sdiv` by checking a left-shifted
+    dividend.
+    
+    Corresponds to upstream fix:
+    https://github.com/bytecodealliance/wasmtime/pull/9541
+    
+    Updates #34
+
+diff --git a/cranelift/codegen/src/isa/aarch64/inst.isle b/cranelift/codegen/src/isa/aarch64/inst.isle
+index e7788bed0..bd742116f 100644
+--- a/cranelift/codegen/src/isa/aarch64/inst.isle
++++ b/cranelift/codegen/src/isa/aarch64/inst.isle
+@@ -1574,6 +1574,11 @@
+ (rule 1 (operand_size (fits_in_32 _ty)) (OperandSize.Size32))
+ (rule (operand_size (fits_in_64 _ty)) (OperandSize.Size64))
+ 
++(decl diff_from_32 (Type) u8)
++(attr diff_from_32 (veri chain))
++(rule (diff_from_32 $I8) 24)
++(rule (diff_from_32 $I16) 16)
++
+ (type ScalarSize extern
+       (enum Size8
+             Size16
+@@ -3735,12 +3740,9 @@
+ ;; Check for signed overflow. The only case is min_value / -1.
+ ;; The following checks must be done in 32-bit or 64-bit, depending
+ ;; on the input type.
+-(decl trap_if_div_overflow (Type Reg Reg) Reg)
++(decl trap_if_div_overflow (Type Reg Reg Reg) Reg)
+ (attr trap_if_div_overflow (veri chain))
+-; Rule fails verification in the 8/16 bit cases. Tag broken until fix can be landed.
+-; See: https://github.com/bytecodealliance/wasmtime/issues/9537
+-(attr rule trap_if_div_overflow (tag broken))
+-(rule (trap_if_div_overflow ty x y)
++(rule (trap_if_div_overflow ty xcheck x y)
+       (let (
+           ;; Check RHS is -1.
+           (check_rhs MInst (MInst.AluRRImm12 (ALUOp.AddS) (operand_size ty) (writable_zero_reg) y (u8_into_imm12 1)))
+@@ -3748,7 +3750,7 @@
+           ;; Check LHS is min_value, by subtracting 1 and branching if
+           ;; there is overflow.
+           (check_lhs MInst (MInst.CCmpImm (size_from_ty ty)
+-                                    x
++                                    xcheck
+                                     (u8_into_uimm5 1)
+                                     (nzcv $false $false $false $false)
+                                     (Cond.Eq)))
+@@ -3760,6 +3762,22 @@
+             (ConsumesFlags.ConsumesFlagsReturnsReg trap_if x)
+         )))
+ 
++;; In the cases narrower than a register width, subtracting 1 from the
++;; min_value will not cause overflow (e.g., I8's min_value of -128 stored in
++;; a 32-bit register produces -129 with no overflow). However, if we left shift
++;; x by (32 - ty), we then produce the 32-bit min_value for the respective min
++;; values of I8 and I16.
++;; E.g., I8's 0x00000080 left-shifted by 24 is 0x80000000, which overflows.
++(decl intmin_check (Type Reg) Reg)
++(attr intmin_check (veri chain))
++
++(attr rule intmin_check_fits_in_16 (veri priority))
++(rule intmin_check_fits_in_16 (intmin_check (fits_in_16 ty) x)
++      (alu_rr_imm_shift (ALUOp.Lsl) ty x (imm_shift_from_u8 (diff_from_32 ty))))
++
++;; In the I32 or I64 case, checking x itself against the min_value is fine.
++(rule -1 (intmin_check ty x) x)
++
+ ;; Check for unsigned overflow.
+ (decl trap_if_overflow (ProducesFlags TrapCode) Reg)
+ (rule (trap_if_overflow producer tc)
+diff --git a/cranelift/codegen/src/isa/aarch64/lower.isle b/cranelift/codegen/src/isa/aarch64/lower.isle
+index 2cebf649e..74fc935c9 100644
+--- a/cranelift/codegen/src/isa/aarch64/lower.isle
++++ b/cranelift/codegen/src/isa/aarch64/lower.isle
+@@ -1078,7 +1078,8 @@
+ (rule sdiv (lower (has_type (fits_in_64 ty) (sdiv x y)))
+       (let ((x64 Reg (put_in_reg_sext64 x))
+             (y64 Reg (put_nonzero_in_reg_sext64 y))
+-            (valid_x64 Reg (trap_if_div_overflow ty x64 y64))
++            (intmin_check_x Reg (intmin_check ty x64))
++            (valid_x64 Reg (trap_if_div_overflow ty intmin_check_x x64 y64))
+             (result Reg (a64_sdiv $I64 valid_x64 y64)))
+         result))
+ 
+diff --git a/cranelift/filetests/filetests/isa/aarch64/trap_sdiv.clif b/cranelift/filetests/filetests/isa/aarch64/trap_sdiv.clif
+new file mode 100644
+index 000000000..c780f31e5
+--- /dev/null
++++ b/cranelift/filetests/filetests/isa/aarch64/trap_sdiv.clif
+@@ -0,0 +1,123 @@
++test compile precise-output
++target aarch64
++
++function %div8(i8, i8) -> i8 {
++block0(v0: i8, v1: i8):
++  v2 = sdiv v0, v1
++  return v2
++}
++
++; VCode:
++; block0:
++;   sxtb x3, w0
++;   sxtb x5, w1
++;   cbz x5, #trap=int_divz
++;   lsl w8, w3, #24
++;   adds wzr, w5, #1
++;   ccmp w8, #1, #nzcv, eq
++;   b.vs #trap=int_ovf
++;   sdiv x0, x3, x5
++;   ret
++;
++; Disassembled:
++; block0: ; offset 0x0
++;   sxtb x3, w0
++;   sxtb x5, w1
++;   cbz x5, #0x24
++;   lsl w8, w3, #0x18
++;   cmn w5, #1
++;   ccmp w8, #1, #0, eq
++;   b.vs #0x28
++;   sdiv x0, x3, x5
++;   ret
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_divz
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_ovf
++
++function %div16(i16, i16) -> i16 {
++block0(v0: i16, v1: i16):
++  v2 = sdiv v0, v1
++  return v2
++}
++
++; VCode:
++; block0:
++;   sxth x3, w0
++;   sxth x5, w1
++;   cbz x5, #trap=int_divz
++;   lsl w8, w3, #16
++;   adds wzr, w5, #1
++;   ccmp w8, #1, #nzcv, eq
++;   b.vs #trap=int_ovf
++;   sdiv x0, x3, x5
++;   ret
++;
++; Disassembled:
++; block0: ; offset 0x0
++;   sxth x3, w0
++;   sxth x5, w1
++;   cbz x5, #0x24
++;   lsl w8, w3, #0x10
++;   cmn w5, #1
++;   ccmp w8, #1, #0, eq
++;   b.vs #0x28
++;   sdiv x0, x3, x5
++;   ret
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_divz
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_ovf
++
++function %div32(i32, i32) -> i32 {
++block0(v0: i32, v1: i32):
++  v2 = sdiv v0, v1
++  return v2
++}
++
++; VCode:
++; block0:
++;   sxtw x3, w0
++;   sxtw x5, w1
++;   cbz x5, #trap=int_divz
++;   adds wzr, w5, #1
++;   ccmp w3, #1, #nzcv, eq
++;   b.vs #trap=int_ovf
++;   sdiv x0, x3, x5
++;   ret
++;
++; Disassembled:
++; block0: ; offset 0x0
++;   sxtw x3, w0
++;   sxtw x5, w1
++;   cbz x5, #0x20
++;   cmn w5, #1
++;   ccmp w3, #1, #0, eq
++;   b.vs #0x24
++;   sdiv x0, x3, x5
++;   ret
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_divz
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_ovf
++
++function %div64(i64, i64) -> i64 {
++block0(v0: i64, v1: i64):
++  v2 = sdiv v0, v1
++  return v2
++}
++
++; VCode:
++; block0:
++;   cbz x1, #trap=int_divz
++;   adds xzr, x1, #1
++;   ccmp x0, #1, #nzcv, eq
++;   b.vs #trap=int_ovf
++;   sdiv x0, x0, x1
++;   ret
++;
++; Disassembled:
++; block0: ; offset 0x0
++;   cbz x1, #0x18
++;   cmn x1, #1
++;   ccmp x0, #1, #0, eq
++;   b.vs #0x1c
++;   sdiv x0, x0, x1
++;   ret
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_divz
++;   .byte 0x1f, 0xc1, 0x00, 0x00 ; trap: int_ovf
++

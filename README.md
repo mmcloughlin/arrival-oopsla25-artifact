@@ -89,9 +89,60 @@ applicable type instantiations. You should see output similar to:
 > those as well. Ideally, artifacts should include sample outputs and logs for
 > comparison.
 
-### Reproduce `sdiv` Bug [est. ??? mins]
+### Reproduce `sdiv` Bug [est. 5 mins]
 
-TODO
+To reproduce the `sdiv` bug discussed in Section 2.4 "Bug Discovery with
+Arrival", first run the docker container:
+
+```
+docker run -v .:/root/artifact -it arrival
+```
+
+Since the bug has now been fixed, revert the change to reintroduce the error:
+```
+patch -R -p1 -d /root/arrival/ -i /root/artifact/data/sdiv_fix.patch
+```
+
+Run verification against the `sdiv` rule:
+```
+./script/veri.sh -- --filter rule:sdiv
+```
+
+After a few seconds, you should see a verification error as well as the values
+of all intermediate terms in a counterexample, such as below (trimmed for brevity).
+
+```
+#416    sdiv
+        sdiv({bits: int}, bv 8, bv 8) -> bv 8
+                type solution status = solved
+                applicability = applicable
+                verification = failure
+model:
+state: fpcr = #x0000000000000000
+state: clif_load = {active: false, size_bits: 0, addr: #x0000000000000000}
+state: isa_store = {active: false, size_bits: 1, addr: #x0000000000000000, value: #x0000000000000000}
+state: loaded_value = #x0000000000000000
+state: clif_store = {active: false, size_bits: 1, addr: #x0000000000000000, value: #x0000000000000000}
+state: exec_trap = false
+state: clif_trap = true
+state: isa_load = {active: false, size_bits: 0, addr: #x0000000000000000}
+has_type({bits: 8}, #x00) -> #x00
+fits_in_64({bits: 8}) -> {bits: 8}
+sdiv({bits: 0}, #x80, #xff) -> #x00
+...
+MInst.Extend(#xffffffffffffffff, #x00000000000000ff, true, #x08, #x40) -> {flags_in: {N: #b0, Z: #b0, C: #b0, V: #b0}, flags_out: {N: #b0, Z: #b0, C: #b0, V: #b0}}
+emit({flags_in: {N: #b0, Z: #b0, C: #b0, V: #b0}, flags_out: {N: #b0, Z: #b0, C: #b0, V: #b0}}) -> #b1
+lower(#x00) -> #x80
+Error: verify expansion: 416
+
+Caused by:
+    verification failed
+```
+
+Note that the state variables `clif_trap` and `exec_trap` tell us that this
+counterexample would trap in CLIF semantics, but not in the lowered
+instructions. The inputs to the `sdiv` term also show us concrete inputs that
+trigger the bug.
 
 ### Verify AArch64 Instruction Selection Rules [est. ??? mins]
 
