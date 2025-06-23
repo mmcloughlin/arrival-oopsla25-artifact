@@ -7,8 +7,10 @@ RUN apt-get update && \
         build-essential \
         curl \
         git \
+        jq \
         libgmp-dev \
         libssl-dev \
+        moreutils \
         opam \
         pkg-config \
         python3-distutils \

@@ -144,9 +144,47 @@ counterexample would trap in CLIF semantics, but not in the lowered
 instructions. The inputs to the `sdiv` term also show us concrete inputs that
 trigger the bug.
 
-### Verify AArch64 Instruction Selection Rules [est. ??? mins]
+### Verify AArch64 Instruction Selection Rules [est. 15-60 mins]
 
-TODO
+Run the container:
+```
+./script/docker_run.sh
+```
+
+Within the container, invoke the evaluation verification run (in CI mode):
+```
+./script/verify/eval.sh -n artifact -c -t 60
+```
+
+The options provided to the evaluation script specify the name `artifact` for
+the verification run (`-n artifact`), enable CI mode (`-c`) and use a timeout of
+60 seconds (`-t 60`).
+
+This command will take a while to run. More cores will help, since Arrival
+processes expansions in parallel.
+
+While this is running you should see log output as it processes expansions, for example:
+```
+...
+[2025-06-23T21:34:01Z INFO ] #1857      ishl_64
+[2025-06-23T21:34:01Z INFO ] #2043      icmp
+[2025-06-23T21:34:01Z INFO ] #1903      sshr_64
+[2025-06-23T21:34:01Z INFO ] #1950      clz_16
+[2025-06-23T21:34:01Z INFO ] #1486      sextend_load
+[2025-06-23T21:34:01Z INFO ] #650       uextend_load
+...
+```
+
+A complete dump of results will be written under the `$EVAL_DATA_DIR/run`
+directory mounted in the container (`data/eval/run` of the artifact).
+Specifically, it will be written to a directory called `<timestamp>-artifact`,
+where `artifact` comes from the name option (`-n`) provided above.
+Locate the results directory by running:
+```
+ls -1d $EVAL_DATA_DIR/run/*-artifact
+```
+
+**TODO:** generating a graph
 
 ### Generate ISA Specifications [est. 10 mins]
 
