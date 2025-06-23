@@ -41,3 +41,6 @@ ENV PATH="/root/cvc5/bin:${PATH}"
 RUN asli --version && \
     z3 --version && \
     cvc5 --version
+
+# Working directory
+WORKDIR /root/arrival/cranelift/isle/veri/veri
