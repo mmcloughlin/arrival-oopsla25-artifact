@@ -369,4 +369,15 @@ Specifically:
 > find/generate/read documentation about the core artifact. Articulate any
 > limitations to the artifact’s reusability.
 
-TODO
+Our core reusable artifact is the Arrival verifier.  Arrival is open-source as
+part of our fork of Wasmtime/Cranelift at
+[mmcloughlin/arrival](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact).
+For documentation on how to use the Arrival verifier:
+
+* [Getting Started Guide](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact/cranelift/isle/veri/README.md)
+* [Specification Language Reference](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact/cranelift/isle/veri/docs/language.md)
+
+Our SymASLp fork of ASLp is public at
+[mmcloughlin/aslp](https://github.com/mmcloughlin/aslp).  The integration of
+Arrival with ASLp is part of our core reusable artifact in the Rust crate
+[cranelift/isle/veri/isaspec](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact/cranelift/isle/veri/isaspec).
