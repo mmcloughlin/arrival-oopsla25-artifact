@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import sys
 import math
 import json
@@ -471,7 +472,7 @@ def write_coverage_table(rows):
     print("\\end{tabular}")
 
 
-def command_coverage(report):
+def command_coverage(report, opts):
     rows = build_coverage_table(report)
     write_coverage_table(rows)
 
@@ -706,7 +707,7 @@ def report_stats(report):
     return stat_macros
 
 
-def command_stats(report):
+def command_stats(report, opts):
     stat_macros = []
 
     # Report stats.
@@ -725,7 +726,7 @@ def command_stats(report):
         write_stat_macro(stat_macro)
 
     # CI report.
-    ci_report = read_report(run_report_path(CI_RUN_ID))
+    ci_report = read_report(run_report_path(opts.ci_run_id))
     assert_report_is_usable(ci_report)
     assert ci_report["git_version"] == report["git_version"]
     ci_stat_macros = report_stats(ci_report)
@@ -765,7 +766,7 @@ def command_stats(report):
     write_stat("specstotalcrocuspaper", crocus.total_specs)
 
 
-def command_timings(report, output_path):
+def command_timings(report, opts):
     timeout_duration = duration_as_seconds(report["timeout"])
 
     # Collect type instantiaton durations
@@ -807,10 +808,10 @@ def command_timings(report, output_path):
     [tick.set_markeredgecolor(axis_color) for tick in ax.xaxis.get_ticklines()]
     [tick.set_markeredgecolor(axis_color) for tick in ax.yaxis.get_ticklines()]
 
-    fig.savefig(output_path)
+    fig.savefig(opts.output_path)
 
 
-def command_timeouts(report):
+def command_timeouts(report, opts):
     timeout_count = Counter()
     for expansion in report["expansions"]:
         if expansion_has_timeout(expansion):
@@ -820,7 +821,7 @@ def command_timeouts(report):
         print(f"{count}\t{description}")
 
 
-def command_slow(report):
+def command_slow(report, opts):
     SLOW_THRESHOLD = 5
     for expansion in report["expansions"]:
         timings = expansion_timings(expansion)
@@ -1096,12 +1097,12 @@ def write_term_spec_kind_lines(spec_kind_lines):
         write_stat_lines(f"totalspeckindlines{name}", lines)
 
 
-def command_specs(report):
+def command_specs(report, opts):
     term_stats = build_term_stats(report)
     write_term_category_table(term_stats.category_counts, term_stats.category_lines)
 
 
-def command_terms(report):
+def command_terms(report, opts):
     # Gather all terms present in the expansions.
     terms = all_expansion_terms(report)
 
@@ -1122,7 +1123,7 @@ def command_terms(report):
         print(f"{name}\t{term_kind}\t{spec_kind}\t{term_meta['class']}\t{lines}")
 
 
-def command_lint(report):
+def command_lint(report, opts):
     # Baseline checks.
     assert_report_is_usable(report)
 
@@ -1140,29 +1141,50 @@ def command_lint(report):
             print(f"warn: rule '{description}' has no instantiations")
 
 
-COMMANDS = {
-    "coverage": command_coverage,
-    "timings": command_timings,
-    "timeouts": command_timeouts,
-    "slow": command_slow,
-    "specs": command_specs,
-    "stats": command_stats,
-    "terms": command_terms,
-    "lint": command_lint,
-}
-
-
 def main():
-    logging.basicConfig(level=logging.INFO)
+    # Options.
+    parser = argparse.ArgumentParser(description='Process evaluation data')
+    parser.add_argument('--run-id', help="id for full verification run", default=EVAL_RUN_ID)
+    parser.add_argument('--ci-run-id', help="id for ci verification run", default=CI_RUN_ID)
+    parser.add_argument('--log-level', default="info")
+
+    subparsers = parser.add_subparsers(required=True)
+
+    parser_coverage = subparsers.add_parser("coverage")
+    parser_coverage.set_defaults(command=command_coverage)
+
+    parser_timings = subparsers.add_parser("timings")
+    parser_timings.add_argument("output_path", help="output file for timings plot")
+    parser_timings.set_defaults(command=command_timings)
+
+    parser_timeouts = subparsers.add_parser("timeouts")
+    parser_timeouts.set_defaults(command=command_timeouts)
+
+    parser_slow = subparsers.add_parser("slow")
+    parser_slow.set_defaults(command=command_slow)
+
+    parser_specs = subparsers.add_parser("specs")
+    parser_specs.set_defaults(command=command_specs)
+
+    parser_stats = subparsers.add_parser("stats")
+    parser_stats.set_defaults(command=command_stats)
+
+    parser_terms = subparsers.add_parser("terms")
+    parser_terms.set_defaults(command=command_terms)
+
+    parser_lint = subparsers.add_parser("lint")
+    parser_lint.set_defaults(command=command_lint)
+
+    # Parse
+    opts = parser.parse_args()
+    logging.basicConfig(level=opts.log_level.upper())
 
     # Load
-    report_path = run_report_path(EVAL_RUN_ID)
+    report_path = run_report_path(opts.run_id)
     report = read_report(report_path)
 
     # Run command
-    cmd = sys.argv[1]
-    args = sys.argv[2:]
-    COMMANDS[cmd](report, *args)
+    opts.command(report, opts)
 
 
 if __name__ == "__main__":
