@@ -146,6 +146,8 @@ trigger the bug.
 
 ### Verify AArch64 Instruction Selection Rules [est. 15-60 mins]
 
+#### Verification Run
+
 Run the container:
 ```
 ./script/docker_run.sh
@@ -177,14 +179,53 @@ While this is running you should see log output as it processes expansions, for 
 
 A complete dump of results will be written under the `$EVAL_DATA_DIR/run`
 directory mounted in the container (`data/eval/run` of the artifact).
-Specifically, it will be written to a directory called `<timestamp>-artifact`,
-where `artifact` comes from the name option (`-n`) provided above.
-Locate the results directory by running:
+Specifically, it will be written to a directory with a Run ID of the form
+`<timestamp>-artifact`, where `artifact` comes from the name option (`-n`)
+provided above.  Locate the run directory and its ID with:
 ```
 ls -1d $EVAL_DATA_DIR/run/*-artifact
 ```
 
-**TODO:** generating a graph
+Your Run ID should look something like `2025-06-24T03:02:28-artifact`.
+
+#### Analysis
+
+Below we will see how to fully analyze verification runs to produce the paper's
+results, but for now lets see how to post-process this verification run alone.
+
+In the container, change into the evaluation directory:
+```
+cd /root/artifact/eval/
+```
+
+Take the Run ID just generated and run:
+```
+./process.py --run-id <run id> coverage
+```
+
+This will produce tabular data in the same format as Table 1 in the paper, for
+example the output may look similar to:
+```
+\begin{tabular}{rrrrrrrr}
+\toprule
+\multicolumn{3}{c}{} & \multicolumn{3}{c}{Result} & \multicolumn{2}{c}{Solver} \\
+\cmidrule(lr){4-6} \cmidrule(lr){7-8}
+Category & Expansions & Type Inst. & Verified & Timeout & Inapplicable & cvc5 & Z3 \\
+\midrule
+Memory & 5,832 & 10,368 & 10,368 & 0 & 0 & 10,368 & 0 \\
+Float & 97 & 85 & 56 & 10 & 19 & 85 & 0 \\
+Rest (Integer etc.) & 283 & 563 & 355 & 45 & 163 & 563 & 0 \\
+\midrule
+Total & 6,212 & 11,016 & 10,779 & 55 & 182 & 11,016 & 0 \\
+\bottomrule
+\end{tabular}
+```
+
+The numbers you see should be as in Table 1 with the expected differences
+between the CI run and full verification run:
+
+* More timeouts, and therefore also fewer total verified, because of the 60 second timeout.
+* Zero expansions run under Z3. CI mode uses CVC5 only.
 
 ### Generate ISA Specifications [est. 10 mins]
 
