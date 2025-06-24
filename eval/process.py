@@ -414,7 +414,7 @@ def compute_percent_fully_verified_rules(report):
         if all(is_expansion_fully_verified(expansion) for expansion in expansions):
             fully_verified_count += 1
         else:
-            logging.info(f"rule '{rule}' is not fully verified.")
+            logging.debug(f"rule '{rule}' is not fully verified.")
 
     return 100.0 * fully_verified_count / len(rule_expansions)
 
