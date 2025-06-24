@@ -30,14 +30,14 @@ Docker based on your system's instructions.
 Build the `arrival` Docker image from the root of the artifact as follows:
 
 ```
-docker build -t arrival .
+./script/docker_build.sh
 ```
 
 ### Basic Test [est. 5 minutes]
 
 Run the container:
 ```
-docker run -it arrival
+./script/docker_run.sh
 ```
 
 Verify a simple lowering of the integer addition `iadd` instruction, execute
@@ -95,7 +95,7 @@ To reproduce the `sdiv` bug discussed in Section 2.4 "Bug Discovery with
 Arrival", first run the docker container:
 
 ```
-docker run -v .:/root/artifact -it arrival
+./script/docker_run.sh
 ```
 
 Since the bug has now been fixed, revert the change to reintroduce the error:
@@ -190,7 +190,7 @@ ls -1d $EVAL_DATA_DIR/run/*-artifact
 
 Run the container:
 ```
-docker run -it arrival
+./script/docker_run.sh
 ```
 
 Generated specifications are checked in to the Cranelift codebase. You can
