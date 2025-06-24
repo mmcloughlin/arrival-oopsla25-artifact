@@ -8,3 +8,6 @@ generated/timings.pdf: process.py
 
 %.cloc: %.rs
 	cloc --by-file --json $< > $@
+
+clean:
+	$(RM) generated/*
