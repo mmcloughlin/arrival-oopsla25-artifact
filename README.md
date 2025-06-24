@@ -7,10 +7,37 @@
 > whether or not each is supported. For supported claims, say how the artifact
 > provides support. For unsupported claims, explain why they are omitted.
 
-Artifact for our OOPSLA 2025 paper "Scaling Instruction-Selection Verification
-with Authoritative ISA Semantics in an Industrial WebAssembly Compiler".
+Artifact accompanying our OOPSLA 2025 paper "Scaling Instruction-Selection
+Verification with Authoritative ISA Semantics in an Industrial WebAssembly
+Compiler".
 
-TODO
+Arrival is an instruction-selection verifier for the Cranelift production Wasm
+compiler.  Our work verifies nearly all AArch64 instruction-selection rules
+reachable from Wasm core.  Furthermore, Arrival reduces the developer effort
+required: 60% of all specifications benefit from our automation, thereby
+requiring 2.6X fewer hand-written specifications than prior approaches.  Arrival
+finds new bugs in Cranelift's instruction selection, and it is viable for
+integration into production workflows.
+
+Claims in the paper supported by this artifact:
+
+* _Verification of nearly all AArch64 instruction-selection rules reachable from Wasm core._
+  We show how to run the AArch64 verification run in CI mode (lower timeout),
+  and provide cached data from full verification runs.  We provide analysis
+  scripts to produce the coverage statistics in Table 1.
+* _Specification burden required by Arrival._
+  Specifications are available in the Arrival codebase.  We provide the data and
+  analysis scripts to support specifications statistics in Table 2.
+* _Arrival's auto-generation of ISA specifications._
+  We show how to run Arrival's ISA specification pipeline to reproduce all
+  auto-generated ISA specifications, as detailed in Sections 5 and 6.2.  Our
+  SymASLp fork of ASLp is open source and used in this artifact.
+* _Arrival's suitability for integration into Continuous Integration (CI)._
+  We show how to run the AArch64 verification run with settings suitable for CI,
+  as discussed in Section 6.3.  We provide data and analysis scripts to
+  reproduce the verification timings in Figure 5.
+* _Arrival's ability to discover bugs in Cranelift._
+  We show how to reproduce the `sdiv` lowering bug discussed in Section 2.4.
 
 ## Hardware Dependencies
 
