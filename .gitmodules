@@ -4,4 +4,4 @@
 	branch = oopsla25-artifact
 [submodule "data/eval"]
 	path = data/eval
-	url = git@github.com:mmcloughlin/veriisle-data.git
+	url = git@github.com:mmcloughlin/arrival-data.git
