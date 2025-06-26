@@ -94,13 +94,6 @@ Build the `arrival` Docker image from the root of the artifact as follows:
 ./script/docker_build.sh
 ```
 
-#### Optional: open running instance in VSCode [est. 5 minutes]
-
-We recommend connecting to the running Docker instance in [VSCode][] or another IDE that enables connecting to instances, so you can view files (including PDFs/images) interactively. Instructions for VSCode can be found here: [VSCode attach container][].
-
-[vscode]: https://code.visualstudio.com
-[VSCode attach container]: https://code.visualstudio.com/docs/devcontainers/attach-container
-
 ### Basic Test [est. 5 minutes]
 
 Run the container with:
@@ -108,10 +101,18 @@ Run the container with:
 ./script/docker_run.sh
 ```
 
+
 > [!Note]  
 > The remainder of this artifact assumes all commands are run from within the Docker instance.
 
-To verify a simple lowering of the integer addition `iadd` instruction, execute:
+#### Optional: open running instance in VSCode [est. 5 minutes]
+
+We recommend connecting to the running Docker instance in [VSCode][] or another IDE that enables connecting to instances, so you can view files (including PDFs/images) interactively. Instructions for VSCode can be found here: [VSCode attach container][].
+
+[vscode]: https://code.visualstudio.com
+[VSCode attach container]: https://code.visualstudio.com/docs/devcontainers/attach-container
+
+To verify a simple lowering of the integer addition `iadd` instruction, execute within the container:
 ```
 ./script/veri.sh -- --filter rule:iadd_base_case
 ```
