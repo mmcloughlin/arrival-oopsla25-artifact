@@ -162,14 +162,10 @@ applicable type instantiations. You should see output similar to:
 
 ### Reproduce `sdiv` Bug [est. 5 mins]
 
-To reproduce the `sdiv` bug discussed in Section 2.4 "Bug Discovery with
-Arrival", first run the docker container:
+Next, we'll reproduce the `sdiv` bug discussed in Section 2.4 "Bug Discovery with
+Arrival".
 
-```
-./script/docker_run.sh
-```
-
-Since the bug has now been fixed, revert the change to reintroduce the error:
+Since the bug has now been fixed, we'll first revert the change to reintroduce the error. From within the container, run:
 ```
 patch -R -p1 -d /root/arrival/ -i /root/artifact/data/sdiv_fix.patch
 ```
@@ -211,9 +207,22 @@ Caused by:
 ```
 
 Note that the state variables `clif_trap` and `exec_trap` tell us that this
-counterexample would trap in CLIF semantics, but not in the lowered
-instructions. The inputs to the `sdiv` term also show us concrete inputs that
+counterexample would trap in CLIF (Cranelift Intermediate Representation) semantics, but not in the lowered
+(ISA) instructions. The inputs to the `sdiv` term also show us concrete inputs that
 trigger the bug.
+
+Once you have examined the failed verification output, reapply the fix (now without the `-R` flag):
+
+```
+patch -p1 -d /root/arrival/ -i /root/artifact/data/sdiv_fix.patch
+```
+
+Then rerun verification against the `sdiv` rule:
+```
+./script/veri.sh -- --filter rule:sdiv
+```
+
+You should now see verification succeed.
 
 ### Verify AArch64 Instruction Selection Rules [est. 15-60 mins]
 
