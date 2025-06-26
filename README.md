@@ -42,8 +42,9 @@ Claims in the paper supported by this artifact:
 ## Hardware Dependencies
 
 This artifact requires a single x86 host machine for the best Docker performance
-(we have tested it on an M2 MacBook and the instructions all work, but due to 
-poor virtualization performance with Docker, the CI run takes ~4 hours). 
+(we have tested it on an aarch64 M2 MacBook and the instructions all work, but due to 
+poor virtualization performance with Docker, the CI run takes ~4 hours compared to 
+~10-60 minutes on the x86 machines we've tested). 
 While there is no strict 
 requirement for many cores, the Arrival verifier parallelizes over available
 cores, and reviewers will have a better time with at least 8 and ideally more
@@ -95,13 +96,15 @@ Build the `arrival` Docker image from the root of the artifact as follows:
 
 ### Basic Test [est. 5 minutes]
 
-Run the container:
+Run the container with:
 ```
 ./script/docker_run.sh
 ```
 
-Verify a simple lowering of the integer addition `iadd` instruction, execute
-within the container:
+> [!Note]  
+> The remainder of this artifact assumes all commands are run from within the Docker instance.
+
+To verify a simple lowering of the integer addition `iadd` instruction, execute:
 ```
 ./script/veri.sh -- --filter rule:iadd_base_case
 ```
