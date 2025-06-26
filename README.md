@@ -282,6 +282,11 @@ Total & 6,212 & 11,016 & 10,779 & 55 & 182 & 11,016 & 0 \\
 \end{tabular}
 ```
 
+You can pass the `--ascii` flag to format as an ASCII table rather than LaTeX:
+```
+./process.py --ascii --run-id <run id> coverage
+```
+
 The numbers you see should be as in Table 1 with the expected differences
 between the CI run and full verification run:
 
