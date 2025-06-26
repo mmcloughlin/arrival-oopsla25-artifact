@@ -11,9 +11,9 @@ Artifact accompanying our OOPSLA 2025 paper "Scaling Instruction-Selection
 Verification with Authoritative ISA Semantics in an Industrial WebAssembly
 Compiler".
 
-Arrival is an instruction-selection verifier for the Cranelift production Wasm
-compiler.  Our work verifies nearly all AArch64 instruction-selection rules
-reachable from Wasm core.  Furthermore, Arrival reduces the developer effort
+Arrival is an instruction-selection verifier for the Cranelift production WebAssembly (Wasm)
+compiler.  Our work verifies nearly all of the AArch64 instruction-selection rules
+reachable from Wasm core. Furthermore, Arrival reduces the developer effort
 required: 60% of all specifications benefit from our automation, thereby
 requiring 2.6X fewer hand-written specifications than prior approaches.  Arrival
 finds new bugs in Cranelift's instruction selection, and it is viable for
@@ -22,7 +22,7 @@ integration into production workflows.
 Claims in the paper supported by this artifact:
 
 * _Verification of nearly all AArch64 instruction-selection rules reachable from Wasm core._
-  We show how to run the AArch64 verification run in CI mode (lower timeout),
+  We show how to run the AArch64 verification run in Continuous Integration (CI) mode (lower timeout),
   and provide cached data from full verification runs.  We provide analysis
   scripts to produce the coverage statistics in Table 1.
 * _Specification burden required by Arrival._
@@ -41,18 +41,51 @@ Claims in the paper supported by this artifact:
 
 ## Hardware Dependencies
 
-This artifact requires a single x86 host machine. While there is no strict
+This artifact requires a single x86 host machine for the best Docker performance
+(we have tested it on an M2 MacBook and the instructions all work, but due to 
+poor virtualization performance with Docker, the CI run takes ~4 hours). 
+While there is no strict 
 requirement for many cores, the Arrival verifier parallelizes over available
 cores, and reviewers will have a better time with at least 8 and ideally more
-cores.
+cores. 
 
 ## Getting Started Guide
 
 ### Setup [est. 10-30 minutes]
 
 We provide our artifact as a
-[Docker](https://docs.docker.com/engine/installation/) instance. Please install
-Docker based on your system's instructions.
+[Docker](https://docs.docker.com/engine/installation/) file. 
+
+#### Install Docker if needed [est. 5 minutes]
+
+Users should install [Docker][docker] based on their system's instructions. 
+
+[docker]: https://docs.docker.com/engine/installation/
+
+#### Optional: increase memory available to Docker  [est. 5 minutes] 
+
+Our artifact performs better with >2GB of memory available (a limit imposed by some Docker configurations). To check how much memory is available to the running Docker container, open a second terminal on the host machine (not within the Docker shell) and run:
+```
+docker stats
+```
+
+Check the column titled `MEM USAGE / LIMIT`. On macOS/Windows, the second value of limit may initially be `1.939GiB`, because although native Docker on Linux [does not default to having memory limits][docker-mem], [Docker Desktop for Mac][docker-mac] and [Docker Desktop for Windows][docker-windows] have a 2GB limit imposed. 
+
+You can increase the Docker Desktop memory limit to (e.g., to 4GB or 8GB) by following the links above or these steps:
+1. Open Docker Desktop.
+2. Open Setting (gear icon).
+3. Click Resources on the side bar.
+4. Increase the Memory bar.
+
+Similarly, if you are running Docker within a virtual container or cloud instance, follow the instructions from that provider.
+
+[docker-mem]: https://docs.docker.com/config/containers/resource_constraints/
+[docker-mac]: https://docs.docker.com/desktop/mac/
+[docker-windows]: https://docs.docker.com/desktop/windows/
+
+We also suggest increasing the cores available to Docker to as many as your machine supports, ideally at least 8.
+
+#### Build Docker instance [est. 5 minutes]
 
 Build the `arrival` Docker image from the root of the artifact as follows:
 
