@@ -2,11 +2,6 @@
 
 ## Introduction
 
-> In the Introduction, briefly explain the purpose of the artifact and how it
-> supports the paper. We recommend listing all claims in the paper and stating
-> whether or not each is supported. For supported claims, say how the artifact
-> provides support. For unsupported claims, explain why they are omitted.
-
 Artifact accompanying our OOPSLA 2025 paper "Scaling Instruction-Selection
 Verification with Authoritative ISA Semantics in an Industrial WebAssembly
 Compiler".
@@ -145,20 +140,6 @@ applicable type instantiations. You should see output similar to:
 ```
 
 ## Step by Step Instructions
-
-> In the Step by Step Instructions, explain how to reproduce any experiments or
-> other activities that support the conclusions in your paper. Write this for
-> readers who have a deep interest in your work and are studying it to improve it
-> or compare against it. If your artifact runs for more than a few minutes, point
-> this out, note how long it is expected to run (roughly) and explain how to run
-> it on smaller inputs. Reviewers may choose to run on smaller inputs or larger
-> inputs depending on available resources.
->
-> Be sure to explain the expected outputs produced by the Step by Step
-> Instructions. State where to find the outputs and how to interpret them relative
-> to the paper. If there are any expected warnings or error messages, explain
-> those as well. Ideally, artifacts should include sample outputs and logs for
-> comparison.
 
 ### Reproduce `sdiv` Bug [est. 5 mins]
 
@@ -415,12 +396,6 @@ Specifically:
 * `terms.tsv`: Terms involved in the verification and their metadata.
 
 ## Reusability Guide
-
-> In the Reusability Guide, explain which parts of your artifact constitute the
-> core pieces which should be evaluated for reusability. Explain how to adapt the
-> artifact to new inputs or new use cases. Provide instructions for how to
-> find/generate/read documentation about the core artifact. Articulate any
-> limitations to the artifact’s reusability.
 
 Our core reusable artifact is the Arrival verifier.  Arrival is open-source as
 part of our fork of Wasmtime/Cranelift at
