@@ -172,10 +172,6 @@ def count_isaspec_config_lines():
 
 
 def duration_as_seconds(duration):
-    # "duration": {
-    #   "secs": 411,
-    #   "nanos": 386312945
-    # },
     return duration["secs"] + duration["nanos"] / 1e9
 
 
@@ -224,7 +220,7 @@ def expansion_timings(expansion):
         elif verdict == "success":
             durations.append(duration_as_seconds(type_instantiation["duration"]))
         elif verdict == "inapplicable":
-            # TODO: how to handle inapplicable?
+            # Note: inapplicable not included in duration list
             pass
         else:
             raise ValueError(f"Unexpected verdict: {verdict}")
@@ -471,10 +467,38 @@ def write_coverage_table(rows):
     print("\\bottomrule")
     print("\\end{tabular}")
 
+from tabulate import tabulate
+
+def write_coverage_table_tabulate(rows):
+    COLS = [
+        ("expansions", "Expansions"),
+        ("type_instantiations", "Type Inst."),
+        ("success", "Verified"),
+        ("unknown", "Timeout"),
+        ("inapplicable", "Inapplicable"),
+        ("cvc5", "cvc5"),
+        ("z3", "Z3"),
+    ]
+
+    headers = ["Category"] + [heading for _, heading in COLS]
+    table = []
+
+    for row in rows:
+        stats = row.stats._asdict()
+        data_row = [row.name] + [f"{stats[col]:,}" for col, _ in COLS]
+        table.append(data_row)
+
+        # Insert a divider before Total
+        if row.name == "Total":
+            table.append(["-" * len(h) for h in headers])
+
+    # Print the table
+    print(tabulate(table, headers=headers, tablefmt="grid"))
 
 def command_coverage(report, opts):
     rows = build_coverage_table(report)
     write_coverage_table(rows)
+    # write_coverage_table_tabulate
 
 
 def write_stat(name, value, unit=""):
@@ -1147,6 +1171,8 @@ def main():
     parser.add_argument('--run-id', help="id for full verification run", default=EVAL_RUN_ID)
     parser.add_argument('--ci-run-id', help="id for ci verification run", default=CI_RUN_ID)
     parser.add_argument('--log-level', default="info")
+    parser.add_argument('--ascii', action='store_true', help="output table in ASCII format instead of LaTeX")
+
 
     subparsers = parser.add_subparsers(required=True)
 
