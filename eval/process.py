@@ -423,7 +423,7 @@ def build_coverage_table(report):
     ROW_DEFINITIONS = [
         ("Memory", include_mem),
         ("Float", include_float),
-        ("Rest (Integer etc.)", exclude_float_mem),
+        ("Rest", exclude_float_mem),
         ("Total", include_all),
     ]
     return list(
@@ -488,17 +488,15 @@ def write_coverage_table_tabulate(rows):
         data_row = [row.name] + [f"{stats[col]:,}" for col, _ in COLS]
         table.append(data_row)
 
-        # Insert a divider before Total
-        if row.name == "Total":
-            table.append(["-" * len(h) for h in headers])
-
     # Print the table
     print(tabulate(table, headers=headers, tablefmt="grid"))
 
 def command_coverage(report, opts):
     rows = build_coverage_table(report)
-    write_coverage_table(rows)
-    # write_coverage_table_tabulate
+    if opts.ascii:
+        write_coverage_table_tabulate(rows)
+    else:
+        write_coverage_table(rows)
 
 
 def write_stat(name, value, unit=""):
@@ -1172,7 +1170,6 @@ def main():
     parser.add_argument('--ci-run-id', help="id for ci verification run", default=CI_RUN_ID)
     parser.add_argument('--log-level', default="info")
     parser.add_argument('--ascii', action='store_true', help="output table in ASCII format instead of LaTeX")
-
 
     subparsers = parser.add_subparsers(required=True)
 
