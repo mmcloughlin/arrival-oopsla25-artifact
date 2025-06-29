@@ -391,7 +391,7 @@ ls generated/
 Specifically:
 
 * `coverage.tex`: Table 1. Verification results for selected Wasm-critical subset.
-* `specs.tex`: Table 2. Specifications required for
+* `specs.tex`: Table 2. Specifications required for the verification. 
 * `timings.pdf`: Figure 5. Cumulative distribution graph of verification times.
 * `stats.tex`: Computed statistics used in the paper, as LaTeX macros.
 * `slow.tsv`: Expansions that were slow to verify.
