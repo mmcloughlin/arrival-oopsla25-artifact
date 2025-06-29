@@ -2,30 +2,86 @@
 
 ## Introduction
 
-> In the Introduction, briefly explain the purpose of the artifact and how it
-> supports the paper. We recommend listing all claims in the paper and stating
-> whether or not each is supported. For supported claims, say how the artifact
-> provides support. For unsupported claims, explain why they are omitted.
+Artifact accompanying our OOPSLA 2025 paper "Scaling Instruction-Selection
+Verification with Authoritative ISA Semantics in an Industrial WebAssembly
+Compiler".
 
-Artifact for our OOPSLA 2025 paper "Scaling Instruction-Selection Verification
-with Authoritative ISA Semantics in an Industrial WebAssembly Compiler".
+Arrival is an instruction-selection verifier for the Cranelift production WebAssembly (Wasm)
+compiler.  Our work verifies nearly all of the AArch64 instruction-selection rules
+reachable from Wasm core. Furthermore, Arrival reduces the developer effort
+required: 60% of all specifications benefit from our automation, thereby
+requiring 2.6X fewer hand-written specifications than prior approaches.  Arrival
+finds new bugs in Cranelift's instruction selection, and it is viable for
+integration into production workflows.
 
-TODO
+Claims in the paper supported by this artifact:
+
+* _Verification of nearly all AArch64 instruction-selection rules reachable from Wasm core._
+  We show how to run the AArch64 verification run in Continuous Integration (CI) mode (lower timeout),
+  and provide cached data from full verification runs.  We provide analysis
+  scripts to produce the coverage statistics in Table 1.
+* _Specification burden required by Arrival._
+  Specifications are available in the Arrival codebase.  We provide the data and
+  analysis scripts to support specifications statistics in Table 2.
+* _Arrival's auto-generation of ISA specifications._
+  We show how to run Arrival's ISA specification pipeline to reproduce all
+  auto-generated ISA specifications, as detailed in Sections 5 and 6.2.  Our
+  SymASLp fork of ASLp is open source and used in this artifact.
+* _Arrival's suitability for integration into Continuous Integration (CI)._
+  We show how to run the AArch64 verification run with settings suitable for CI,
+  as discussed in Section 6.3.  We provide data and analysis scripts to
+  reproduce the verification timings in Figure 5.
+* _Arrival's ability to discover bugs in Cranelift._
+  We show how to reproduce the `sdiv` lowering bug discussed in Section 2.4.
 
 ## Hardware Dependencies
 
-This artifact requires a single x86 host machine. While there is no strict
+This artifact requires a single x86 host machine for the best Docker performance
+(we have tested it on an aarch64 M2 MacBook and the instructions all work, but due to 
+poor virtualization performance with Docker, the CI run takes ~4 hours compared to 
+~10-60 minutes on the x86 machines we've tested). 
+While there is no strict 
 requirement for many cores, the Arrival verifier parallelizes over available
 cores, and reviewers will have a better time with at least 8 and ideally more
-cores.
+cores. 
 
 ## Getting Started Guide
 
 ### Setup [est. 10-30 minutes]
 
 We provide our artifact as a
-[Docker](https://docs.docker.com/engine/installation/) instance. Please install
-Docker based on your system's instructions.
+[Docker](https://docs.docker.com/engine/installation/) file. 
+
+#### Install Docker if needed [est. 5 minutes]
+
+Users should install [Docker][docker] based on their system's instructions. 
+
+[docker]: https://docs.docker.com/engine/installation/
+
+#### Optional: increase memory available to Docker  [est. 5 minutes] 
+
+Our artifact performs better with >2GB of memory available (a limit imposed by some Docker configurations). To check how much memory is available to the running Docker container, open a second terminal on the host machine (not within the Docker shell) and run:
+```
+docker stats
+```
+
+Check the column titled `MEM USAGE / LIMIT`. On macOS/Windows, the second value of limit may initially be `1.939GiB`, because although native Docker on Linux [does not default to having memory limits][docker-mem], [Docker Desktop for Mac][docker-mac] and [Docker Desktop for Windows][docker-windows] have a 2GB limit imposed. 
+
+You can increase the Docker Desktop memory limit to (e.g., to 4GB or 8GB) by following the links above or these steps:
+1. Open Docker Desktop.
+2. Open Setting (gear icon).
+3. Click Resources on the side bar.
+4. Increase the Memory bar.
+
+Similarly, if you are running Docker within a virtual container or cloud instance, follow the instructions from that provider.
+
+[docker-mem]: https://docs.docker.com/config/containers/resource_constraints/
+[docker-mac]: https://docs.docker.com/desktop/mac/
+[docker-windows]: https://docs.docker.com/desktop/windows/
+
+We also suggest increasing the cores available to Docker to as many as your machine supports, ideally at least 8.
+
+#### Build Docker instance [est. 5 minutes]
 
 Build the `arrival` Docker image from the root of the artifact as follows:
 
@@ -35,13 +91,23 @@ Build the `arrival` Docker image from the root of the artifact as follows:
 
 ### Basic Test [est. 5 minutes]
 
-Run the container:
+Run the container with:
 ```
 ./script/docker_run.sh
 ```
 
-Verify a simple lowering of the integer addition `iadd` instruction, execute
-within the container:
+
+> [!Note]  
+> The remainder of this artifact assumes all commands are run from within the Docker instance.
+
+#### Optional: open running instance in VSCode [est. 5 minutes]
+
+We recommend connecting to the running Docker instance in [VSCode][] or another IDE that enables connecting to instances, so you can view files (including PDFs/images) interactively. Instructions for VSCode can be found here: [VSCode attach container][].
+
+[vscode]: https://code.visualstudio.com
+[VSCode attach container]: https://code.visualstudio.com/docs/devcontainers/attach-container
+
+To verify a simple lowering of the integer addition `iadd` instruction, execute within the container:
 ```
 ./script/veri.sh -- --filter rule:iadd_base_case
 ```
@@ -75,30 +141,12 @@ applicable type instantiations. You should see output similar to:
 
 ## Step by Step Instructions
 
-> In the Step by Step Instructions, explain how to reproduce any experiments or
-> other activities that support the conclusions in your paper. Write this for
-> readers who have a deep interest in your work and are studying it to improve it
-> or compare against it. If your artifact runs for more than a few minutes, point
-> this out, note how long it is expected to run (roughly) and explain how to run
-> it on smaller inputs. Reviewers may choose to run on smaller inputs or larger
-> inputs depending on available resources.
->
-> Be sure to explain the expected outputs produced by the Step by Step
-> Instructions. State where to find the outputs and how to interpret them relative
-> to the paper. If there are any expected warnings or error messages, explain
-> those as well. Ideally, artifacts should include sample outputs and logs for
-> comparison.
-
 ### Reproduce `sdiv` Bug [est. 5 mins]
 
-To reproduce the `sdiv` bug discussed in Section 2.4 "Bug Discovery with
-Arrival", first run the docker container:
+Next, we'll reproduce the `sdiv` bug discussed in Section 2.4 "Bug Discovery with
+Arrival".
 
-```
-./script/docker_run.sh
-```
-
-Since the bug has now been fixed, revert the change to reintroduce the error:
+Since the bug has now been fixed, we'll first revert the change to reintroduce the error. From within the container, run:
 ```
 patch -R -p1 -d /root/arrival/ -i /root/artifact/data/sdiv_fix.patch
 ```
@@ -140,20 +188,28 @@ Caused by:
 ```
 
 Note that the state variables `clif_trap` and `exec_trap` tell us that this
-counterexample would trap in CLIF semantics, but not in the lowered
-instructions. The inputs to the `sdiv` term also show us concrete inputs that
+counterexample would trap in CLIF (Cranelift Intermediate Representation) semantics, but not in the lowered
+(ISA) instructions. The inputs to the `sdiv` term also show us concrete inputs that
 trigger the bug.
+
+Once you have examined the failed verification output, reapply the fix (now without the `-R` flag):
+
+```
+patch -p1 -d /root/arrival/ -i /root/artifact/data/sdiv_fix.patch
+```
+
+Then rerun verification against the `sdiv` rule:
+```
+./script/veri.sh -- --filter rule:sdiv
+```
+
+You should now see verification succeed.
 
 ### Verify AArch64 Instruction Selection Rules [est. 15-60 mins]
 
 #### Verification Run
 
-Run the container:
-```
-./script/docker_run.sh
-```
-
-Within the container, invoke the evaluation verification run (in CI mode):
+Within the container, invoke the evaluation verification run (in CI mode, e.g., with a shorter 60 second timeout for each verification query):
 ```
 ./script/verify/eval.sh -n artifact -c -t 60
 ```
@@ -163,7 +219,7 @@ the verification run (`-n artifact`), enable CI mode (`-c`) and use a timeout of
 60 seconds (`-t 60`).
 
 This command will take a while to run. More cores will help, since Arrival
-processes expansions in parallel.
+processes expansions in parallel. On the x86 machines we tested, this took between 10 and 60 minutes.
 
 While this is running you should see log output as it processes expansions, for example:
 ```
@@ -221,6 +277,11 @@ Total & 6,212 & 11,016 & 10,779 & 55 & 182 & 11,016 & 0 \\
 \end{tabular}
 ```
 
+You can pass the `--ascii` flag to format as an ASCII table rather than LaTeX:
+```
+./process.py --ascii --run-id <run id> coverage
+```
+
 The numbers you see should be as in Table 1 with the expected differences
 between the CI run and full verification run:
 
@@ -234,7 +295,7 @@ Run the container:
 ./script/docker_run.sh
 ```
 
-Generated specifications are checked in to the Cranelift codebase. You can
+Generated specifications are checked in to the Cranelift codebase. Within the container, you can
 locate them with:
 ```
 grep -lR 'GENERATED BY `isaspec`' /root/arrival/cranelift/codegen/src/isa/aarch64/spec/
@@ -245,7 +306,7 @@ To confirm the code generation works from scratch, first delete the generated fi
 grep -lR 'GENERATED BY `isaspec`' /root/arrival/cranelift/codegen/src/isa/aarch64/spec/ | xargs rm -v
 ```
 
-Generate them using the following script:
+Then, rerun the specification generation using the following script:
 ```
 cd ../isaspec
 ./script/generate.sh -l
@@ -290,6 +351,14 @@ regenerated, as before:
 grep -lR 'GENERATED BY `isaspec`' /root/arrival/cranelift/codegen/src/isa/aarch64/spec/
 ```
 
+Take a look at some of the generated files to see the produces specifications. For example,
+the follow is the specification for a two register, one immediate (`rri`) floating-point (`fpu`)
+instruction:
+
+```
+cat /root/arrival/cranelift/codegen/src/isa/aarch64/spec/fpu_rri.isle
+```
+
 ### Run Evaluation Analysis [est. 5 mins]
 
 In this section we show how to run the analysis that produces the major tables,
@@ -304,12 +373,7 @@ instead provide the cached verification run outputs that were used for the paper
 evaluation.  All evaluation run outputs may be seen in the `data/eval/run`
 directory of the artifact.
 
-To run the evaluation data analysis, first run the container:
-```
-./script/docker_run.sh
-```
-
-Change into the evaluation directory:
+From inside the container, change into the evaluation directory:
 ```
 cd /root/artifact/eval/
 ```
@@ -336,10 +400,15 @@ Specifically:
 
 ## Reusability Guide
 
-> In the Reusability Guide, explain which parts of your artifact constitute the
-> core pieces which should be evaluated for reusability. Explain how to adapt the
-> artifact to new inputs or new use cases. Provide instructions for how to
-> find/generate/read documentation about the core artifact. Articulate any
-> limitations to the artifact’s reusability.
+Our core reusable artifact is the Arrival verifier.  Arrival is open-source as
+part of our fork of Wasmtime/Cranelift at
+[mmcloughlin/arrival](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact).
+For documentation on how to use the Arrival verifier:
 
-TODO
+* [Getting Started Guide](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact/cranelift/isle/veri/README.md)
+* [Specification Language Reference](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact/cranelift/isle/veri/docs/language.md)
+
+Our SymASLp fork of ASLp is public at
+[mmcloughlin/aslp](https://github.com/mmcloughlin/aslp).  The integration of
+Arrival with ASLp is part of our core reusable artifact in the Rust crate
+[cranelift/isle/veri/isaspec](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact/cranelift/isle/veri/isaspec).

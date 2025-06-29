@@ -1,7 +1,7 @@
 [submodule "arrival"]
 	path = arrival
-	url = git@github.com:mmcloughlin/veriisle-wasmtime.git
-	branch = veriisle
+	url = git@github.com:mmcloughlin/arrival.git
+	branch = oopsla25-artifact
 [submodule "data/eval"]
 	path = data/eval
-	url = git@github.com:mmcloughlin/veriisle-data.git
+	url = git@github.com:mmcloughlin/arrival-data.git
