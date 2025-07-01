@@ -1166,7 +1166,7 @@ def command_lint(report, opts):
 
 def main():
     # Options.
-    parser = argparse.ArgumentParser(description='Process evaluation data')
+    parser = argparse.ArgumentParser(description='Process evaluation data', fromfile_prefix_chars='@', allow_abbrev=False)
     parser.add_argument('--run-id', help="id for full verification run", default=EVAL_RUN_ID)
     parser.add_argument('--ci-run-id', help="id for ci verification run", default=CI_RUN_ID)
     parser.add_argument('--log-level', default="info")

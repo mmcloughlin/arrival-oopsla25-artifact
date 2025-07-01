@@ -398,6 +398,55 @@ Specifically:
 * `timeouts.tsv`: Expansions that timed out.
 * `terms.tsv`: Terms involved in the verification and their metadata.
 
+### Optional: Full Verification Runs [est. 12+ hours]
+
+#### Verification Runs
+
+To execute a full verification run with 4 hour timeout:
+```
+./script/verify/eval.sh -n full -t 14400
+```
+
+For the CI verification run, either reuse results from above, or run with:
+```
+./script/verify/eval.sh -n ci -c -t 60
+```
+
+As above, look for the Run IDs under the `$EVAL_DATA_DIR/run` directory.
+
+#### Analysis
+
+The evaluation analysis is the same as above, but we'll swap out the Run IDs to
+point at the new data collected.
+
+From inside the container, change into the evaluation directory:
+```
+cd /root/artifact/eval/
+```
+
+Edit the `overrides.args` arguments file to point the evaluation at the new Run
+IDs. It should look something like the following:
+```
+--run-id
+2025-07-01T05:32:13-full
+--ci-run-id
+2025-07-01T18:35:53-ci
+```
+
+Generate evaluation artifacts by running `make`, which will pickup the arguments from `overrides.args`:
+```
+make
+```
+
+Results should be written to the `generated` sub-directory:
+```
+ls generated/
+```
+
+Inspect the generated files as described in the evaluation analysis section
+above. Small differences from the pre-collected data are likely given the
+difference in hardware, in particular you may see different rules timing out.
+
 ## Reusability Guide
 
 Our core reusable artifact is the Arrival verifier.  Arrival is open-source as
