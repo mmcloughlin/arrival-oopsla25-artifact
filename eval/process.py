@@ -424,7 +424,7 @@ def build_coverage_table(report):
     ROW_DEFINITIONS = [
         ("Memory", include_mem),
         ("Float", include_float),
-        ("Rest", exclude_float_mem),
+        ("Rest (Integer etc.)", exclude_float_mem),
         ("Total", include_all),
     ]
     return list(
