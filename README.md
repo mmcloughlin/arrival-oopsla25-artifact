@@ -37,35 +37,35 @@ Claims in the paper supported by this artifact:
 ## Hardware Dependencies
 
 This artifact requires a single x86 host machine for the best Docker performance
-(we have tested it on an aarch64 M2 MacBook and the instructions all work, but due to 
-poor virtualization performance with Docker, the CI run takes ~4 hours compared to 
-~10-60 minutes on the x86 machines we've tested). 
-While there is no strict 
+(we have tested it on an aarch64 M2 MacBook and the instructions all work, but due to
+poor virtualization performance with Docker, the CI run takes ~4 hours compared to
+~10-60 minutes on the x86 machines we've tested).
+While there is no strict
 requirement for many cores, the Arrival verifier parallelizes over available
 cores, and reviewers will have a better time with at least 8 and ideally more
-cores. 
+cores.
 
 ## Getting Started Guide
 
 ### Setup [est. 10-30 minutes]
 
 We provide our artifact as a
-[Docker](https://docs.docker.com/engine/installation/) file. 
+[Docker](https://docs.docker.com/engine/installation/) file.
 
 #### Install Docker if needed [est. 5 minutes]
 
-Users should install [Docker][docker] based on their system's instructions. 
+Users should install [Docker][docker] based on their system's instructions.
 
 [docker]: https://docs.docker.com/engine/installation/
 
-#### Optional: increase memory available to Docker  [est. 5 minutes] 
+#### Optional: increase memory available to Docker  [est. 5 minutes]
 
 Our artifact performs better with >2GB of memory available (a limit imposed by some Docker configurations). To check how much memory is available to the running Docker container, open a second terminal on the host machine (not within the Docker shell) and run:
 ```
 docker stats
 ```
 
-Check the column titled `MEM USAGE / LIMIT`. On macOS/Windows, the second value of limit may initially be `1.939GiB`, because although native Docker on Linux [does not default to having memory limits][docker-mem], [Docker Desktop for Mac][docker-mac] and [Docker Desktop for Windows][docker-windows] have a 2GB limit imposed. 
+Check the column titled `MEM USAGE / LIMIT`. On macOS/Windows, the second value of limit may initially be `1.939GiB`, because although native Docker on Linux [does not default to having memory limits][docker-mem], [Docker Desktop for Mac][docker-mac] and [Docker Desktop for Windows][docker-windows] have a 2GB limit imposed.
 
 You can increase the Docker Desktop memory limit to (e.g., to 4GB or 8GB) by following the links above or these steps:
 1. Open Docker Desktop.
@@ -97,7 +97,7 @@ Run the container with:
 ```
 
 
-> [!Note]  
+> [!Note]
 > The remainder of this artifact assumes all commands are run from within the Docker instance.
 
 #### Optional: open running instance in VSCode [est. 5 minutes]
@@ -391,7 +391,7 @@ ls generated/
 Specifically:
 
 * `coverage.tex`: Table 1. Verification results for selected Wasm-critical subset.
-* `specs.tex`: Table 2. Specifications required for the verification. 
+* `specs.tex`: Table 2. Specifications required for the verification.
 * `timings.pdf`: Figure 5. Cumulative distribution graph of verification times.
 * `stats.tex`: Computed statistics used in the paper, as LaTeX macros.
 * `slow.tsv`: Expansions that were slow to verify.
