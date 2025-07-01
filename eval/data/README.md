@@ -48,9 +48,3 @@ warning: `cranelift-codegen` (lib) generated 7 warnings
      Running `/Users/mbm/Development/school/veriisle/wasmtime/target/debug/isaspec --server 'http://127.0.0.1:4207' --output ../../../codegen/src/isa/aarch64/spec/`
 + kill 22000
 ```
-
-## `instructions.rs`
-
-Copy of `instructions.rs`:
-
-https://github.com/mmcloughlin/veriisle-wasmtime/blob/d0412d27f026ea0341a20673048ff0dd6253a9a8/cranelift/isle/veri/isaspec/src/instructions.rs

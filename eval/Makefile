@@ -9,5 +9,8 @@ generated/timings.pdf: process.py overrides.args
 %.cloc: %.rs
 	cloc --by-file --json $< > $@
 
+data/instructions.rs:
+	cp $(ARRIVAL_DIR)/cranelift/isle/veri/isaspec/src/instructions.rs $@
+
 clean:
 	$(RM) generated/*
