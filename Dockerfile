@@ -51,5 +51,6 @@ RUN asli --version && \
     z3 --version && \
     cvc5 --version
 
-# Working directory
+# Working environment
+ENV ARRIVAL_DIR="/root/arrival"
 WORKDIR /root/arrival/cranelift/isle/veri/veri
