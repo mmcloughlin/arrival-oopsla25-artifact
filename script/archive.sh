@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -exuo pipefail
 
-archive_file="arrival.zip"
+base="arrival-oopsla25-artifact"
+archive_file="${base}.zip"
+doc_file="${base}.pdf"
 
-git-archive-all "${archive_file}"
+# Render the documentation.
+./script/render_doc.sh "${doc_file}"
+
+# Prepare the archive.
+git-archive-all --include="${doc_file}" "${archive_file}"
