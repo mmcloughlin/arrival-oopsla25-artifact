@@ -11,6 +11,7 @@ import logging
 from enum import Enum, auto
 from dataclasses import dataclass
 from collections import Counter, namedtuple
+from tabulate import tabulate
 import matplotlib.pyplot as plt
 
 
@@ -467,7 +468,6 @@ def write_coverage_table(rows):
     print("\\bottomrule")
     print("\\end{tabular}")
 
-from tabulate import tabulate
 
 def write_coverage_table_tabulate(rows):
     COLS = [
@@ -490,6 +490,7 @@ def write_coverage_table_tabulate(rows):
 
     # Print the table
     print(tabulate(table, headers=headers, tablefmt="grid"))
+
 
 def command_coverage(report, opts):
     rows = build_coverage_table(report)
