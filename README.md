@@ -17,9 +17,11 @@ integration into production workflows.
 Claims in the paper supported by this artifact:
 
 * _Verification of nearly all AArch64 instruction-selection rules reachable from Wasm core._
-  We show how to run the AArch64 verification run in Continuous Integration (CI) mode (lower timeout),
-  and provide cached data from full verification runs.  We provide analysis
-  scripts to produce the coverage statistics in Table 1.
+  We show how to run the AArch64 verification run in Continuous Integration (CI)
+  mode (lower timeout), and provide cached data from full verification runs.  We
+  provide analysis scripts to produce the coverage statistics in Table 1. We
+  provide optional instructions for a full verification run, though this can be
+  time consuming.
 * _Specification burden required by Arrival._
   Specifications are available in the Arrival codebase.  We provide the data and
   analysis scripts to support specifications statistics in Table 2.
@@ -399,6 +401,9 @@ Specifically:
 * `terms.tsv`: Terms involved in the verification and their metadata.
 
 ### Optional: Full Verification Runs [est. 12+ hours]
+
+For completeness, we include instructions here on how to do a full verification
+run. But be warned this will take a long time, especially without parallelism.
 
 #### Verification Runs
 
