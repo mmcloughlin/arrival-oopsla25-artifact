@@ -44,7 +44,7 @@ RUN /root/arrival/cranelift/isle/veri/veri/script/install/cvc5.sh -i /root/cvc5
 ENV PATH="/root/cvc5/bin:${PATH}"
 
 # Install evaluation tools
-RUN pip3 install matplotlib==3.9.2
+RUN pip3 install matplotlib==3.9.2 tabulate==0.9.0
 
 # Check
 RUN asli --version && \
