@@ -372,7 +372,7 @@ verification run with a long timeout, and a "CI" run with a 60 second timeout
 and CVC5 only. In the above, we showed how to execute a CI run, which completes
 in a reasonable amount of time.  Since the full run is very time consuming, we
 instead provide the cached verification run outputs that were used for the paper
-evaluation.  All evaluation run outputs may be seen in the `data/eval/run`
+evaluation (optionally, you can run the instructions in the next section to reproduce the 12+ hour verification run).  All evaluation run outputs may be seen in the `data/eval/run`
 directory of the artifact.
 
 From inside the container, change into the evaluation directory:
