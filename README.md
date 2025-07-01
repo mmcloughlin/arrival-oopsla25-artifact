@@ -392,10 +392,14 @@ ls generated/
 
 Specifically:
 
-* `coverage.tex`: Table 1. Verification results for selected Wasm-critical subset.
-* `specs.tex`: Table 2. Specifications required for the verification.
-* `timings.pdf`: Figure 5. Cumulative distribution graph of verification times.
-* `stats.tex`: Computed statistics used in the paper, as LaTeX macros.
+* `coverage.tex`: Table 1. Verification results for selected Wasm-critical subset, as covered in the previous section for the CI results. When viewing results from the cached full run, you should see fewer timeouts than the CI run from before, as expected.
+* `specs.tex`: Table 2. This is a count of the lines and numbers of specification, by category, that are required for the verification. `process.py` produces this file by combining JSON output from the verification run with metadata from the ISLE compiler and the ISA generation script on lines of specification code. 
+* `timings.pdf`: Figure 5. This is a cumulative distribution graph of verification times. `process.py` produces this file from the JSON output from the verification run. 
+* `stats.tex`: This is computed statistics used in the paper, as LaTeX macros. There are many unused macros here, it's not important to check every one.
+
+#### Optional: additional auxiliary data files.
+
+`process.py` also generates the following auxiliary files, which are referenced indirectly in the paper prose. 
 * `slow.tsv`: Expansions that were slow to verify.
 * `timeouts.tsv`: Expansions that timed out.
 * `terms.tsv`: Terms involved in the verification and their metadata.
