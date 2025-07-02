@@ -1,7 +1,7 @@
 [submodule "arrival"]
 	path = arrival
-	url = git@github.com:mmcloughlin/arrival.git
+	url = https://github.com/mmcloughlin/arrival.git
 	branch = oopsla25-artifact
 [submodule "data/eval"]
 	path = data/eval
-	url = git@github.com:mmcloughlin/arrival-data.git
+	url = https://github.com/mmcloughlin/arrival-data.git
