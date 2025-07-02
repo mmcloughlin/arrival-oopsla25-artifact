@@ -6,13 +6,13 @@ Artifact accompanying our OOPSLA 2025 paper "Scaling Instruction-Selection
 Verification with Authoritative ISA Semantics in an Industrial WebAssembly
 Compiler".
 
-Arrival is an instruction-selection verifier for the Cranelift production WebAssembly (Wasm)
-compiler.  Our work verifies nearly all of the AArch64 instruction-selection rules
-reachable from Wasm core. Furthermore, Arrival reduces the developer effort
-required: 60% of all specifications benefit from our automation, thereby
-requiring 2.6X fewer hand-written specifications than prior approaches.  Arrival
-finds new bugs in Cranelift's instruction selection, and it is viable for
-integration into production workflows.
+Arrival is an instruction-selection verifier for the Cranelift production
+WebAssembly (Wasm) compiler.  Our work verifies nearly all of the AArch64
+instruction-selection rules reachable from Wasm core. Furthermore, Arrival
+reduces the developer effort required: 60% of all specifications benefit from
+our automation, thereby requiring 2.6X fewer hand-written specifications than
+prior approaches.  Arrival finds new bugs in Cranelift's instruction selection,
+and it is viable for integration into production workflows.
 
 Claims in the paper supported by this artifact:
 
@@ -39,13 +39,12 @@ Claims in the paper supported by this artifact:
 ## Hardware Dependencies
 
 This artifact requires a single x86 host machine for the best Docker performance
-(we have tested it on an aarch64 M2 MacBook and the instructions all work, but due to
-poor virtualization performance with Docker, the CI run takes ~4 hours compared to
-~10-60 minutes on the x86 machines we've tested).
-While there is no strict
-requirement for many cores, the Arrival verifier parallelizes over available
-cores, and reviewers will have a better time with at least 8 and ideally more
-cores.
+(we have tested it on an aarch64 M2 MacBook and the instructions all work, but
+due to poor virtualization performance with Docker, the CI run takes ~4 hours
+compared to ~10-60 minutes on the x86 machines we've tested).  While there is no
+strict requirement for many cores, the Arrival verifier parallelizes over
+available cores, and reviewers will have a better time with at least 8 and
+ideally more cores.
 
 ## Getting Started Guide
 
@@ -62,12 +61,19 @@ Users should install [Docker][docker] based on their system's instructions.
 
 #### Optional: increase memory available to Docker  [est. 5 minutes]
 
-Our artifact performs better with >2GB of memory available (a limit imposed by some Docker configurations). To check how much memory is available to the running Docker container, open a second terminal on the host machine (not within the Docker shell) and run:
+Our artifact performs better with >2GB of memory available (a limit imposed by
+some Docker configurations). To check how much memory is available to the
+running Docker container, open a second terminal on the host machine (not within
+the Docker shell) and run:
 ```
 docker stats
 ```
 
-Check the column titled `MEM USAGE / LIMIT`. On macOS/Windows, the second value of limit may initially be `1.939GiB`, because although native Docker on Linux [does not default to having memory limits][docker-mem], [Docker Desktop for Mac][docker-mac] and [Docker Desktop for Windows][docker-windows] have a 2GB limit imposed.
+Check the column titled `MEM USAGE / LIMIT`. On macOS/Windows, the second value
+of limit may initially be `1.939GiB`, because although native Docker on Linux
+[does not default to having memory limits][docker-mem], [Docker Desktop for
+Mac][docker-mac] and [Docker Desktop for Windows][docker-windows] have a 2GB
+limit imposed.
 
 You can increase the Docker Desktop memory limit (e.g., to 4GB or 8GB) by following the links above or these steps:
 1. Open Docker Desktop.
@@ -98,20 +104,23 @@ Run the container with:
 ./script/docker_run.sh
 ```
 
-
 > [!Note]
 > The remainder of this artifact assumes all commands are run from within the Docker instance.
 
 #### Optional: open running instance in VSCode [est. 5 minutes]
 
-We recommend connecting to the running Docker instance in [VSCode][] or another IDE that enables connecting to instances, so you can view files (including PDFs/images) interactively. Instructions for VSCode can be found here: [VSCode attach container][].
+We recommend connecting to the running Docker instance in [VSCode][] or another
+IDE that enables connecting to instances, so you can view files (including
+PDFs/images) interactively. Instructions for VSCode can be found here: [VSCode
+attach container][].
 
 [vscode]: https://code.visualstudio.com
 [VSCode attach container]: https://code.visualstudio.com/docs/devcontainers/attach-container
 
 #### Verify an Instruction Lowering [est. 5 minutes]
 
-To verify a simple lowering of the integer addition `iadd` instruction, execute within the container:
+To verify a simple lowering of the integer addition `iadd` instruction, execute
+within the container:
 ```
 ./script/veri.sh -- --filter rule:iadd_base_case
 ```
@@ -150,7 +159,8 @@ applicable type instantiations. You should see output similar to:
 Next, we'll reproduce the `sdiv` bug discussed in Section 2.4 "Bug Discovery with
 Arrival".
 
-Since the bug has now been fixed, we'll first revert the change to reintroduce the error. From within the container, run:
+Since the bug has now been fixed, we'll first revert the change to reintroduce
+the error. From within the container, run:
 ```
 patch -R -p1 -d /root/arrival/ -i /root/artifact/data/sdiv_fix.patch
 ```
@@ -192,11 +202,12 @@ Caused by:
 ```
 
 Note that the state variables `clif_trap` and `exec_trap` tell us that this
-counterexample would trap in CLIF (Cranelift Intermediate Representation) semantics, but not in the lowered
-(ISA) instructions. The inputs to the `sdiv` term also show us concrete inputs that
-trigger the bug.
+counterexample would trap in CLIF (Cranelift Intermediate Representation)
+semantics, but not in the lowered (ISA) instructions. The inputs to the `sdiv`
+term also show us concrete inputs that trigger the bug.
 
-Once you have examined the failed verification output, reapply the fix (now without the `-R` flag):
+Once you have examined the failed verification output, reapply the fix (now
+without the `-R` flag):
 
 ```
 patch -p1 -d /root/arrival/ -i /root/artifact/data/sdiv_fix.patch
@@ -213,7 +224,8 @@ You should now see verification succeed.
 
 #### Verification Run
 
-Within the container, invoke the evaluation verification run (in CI mode, e.g., with a shorter 60 second timeout for each verification query):
+Within the container, invoke the evaluation verification run (in CI mode, e.g.,
+with a shorter 60 second timeout for each verification query):
 ```
 ./script/verify/eval.sh -n artifact -c -t 60
 ```
@@ -223,9 +235,11 @@ the verification run (`-n artifact`), enable CI mode (`-c`) and use a timeout of
 60 seconds (`-t 60`).
 
 This command will take a while to run. More cores will help, since Arrival
-processes expansions in parallel. On the x86 machines we tested, this took between 10 and 60 minutes.
+processes expansions in parallel. On the x86 machines we tested, this took
+between 10 and 60 minutes.
 
-While this is running you should see log output as it processes expansions, for example:
+While this is running you should see log output as it processes expansions, for
+example:
 ```
 ...
 [2025-06-23T21:34:01Z INFO ] #1857      ishl_64
@@ -294,14 +308,15 @@ between the CI run and full verification run:
 
 ### Generate ISA Specifications [est. 10 mins]
 
-Generated specifications are checked in to the Cranelift codebase. Within the container, you can
-locate them with:
+Generated specifications are checked in to the Cranelift codebase. Within the
+container, you can locate them with:
 ```
 grep -lR 'GENERATED BY `isaspec`' \
     /root/arrival/cranelift/codegen/src/isa/aarch64/spec/
 ```
 
-To confirm the code generation works from scratch, first delete the generated files:
+To confirm the code generation works from scratch, first delete the generated
+files:
 ```
 grep -lR 'GENERATED BY `isaspec`' \
     /root/arrival/cranelift/codegen/src/isa/aarch64/spec/ | xargs rm -v
@@ -353,9 +368,9 @@ grep -lR 'GENERATED BY `isaspec`' \
     /root/arrival/cranelift/codegen/src/isa/aarch64/spec/
 ```
 
-Take a look at some of the generated files to see the produces specifications. For example,
-the following is the specification for a two register, one immediate (`rri`) floating-point (`fpu`)
-instruction:
+Take a look at some of the generated files to see the produces specifications.
+For example, the following is the specification for a two register, one
+immediate (`rri`) floating-point (`fpu`) instruction:
 
 ```
 cat /root/arrival/cranelift/codegen/src/isa/aarch64/spec/fpu_rri.isle
@@ -372,37 +387,60 @@ verification run with a long timeout, and a "CI" run with a 60 second timeout
 and CVC5 only. In the above, we showed how to execute a CI run, which completes
 in a reasonable amount of time.  Since the full run is very time consuming, we
 instead provide the cached verification run outputs that were used for the paper
-evaluation (optionally, you can run the instructions in the next section to reproduce the 12+ hour verification run).  All evaluation run outputs may be seen in the `data/eval/run`
-directory of the artifact.
-The evaluation also depends on additional supplemental data files, for example
-for line counts, and metadata on generated ISA specifications. We also provide
-cached copies, and optional instructions on how to reproduce them.
+evaluation (optionally, you can run the instructions in the next section to
+reproduce the 12+ hour verification run).  All evaluation run outputs may be
+seen in the `data/eval/run` directory of the artifact.  The evaluation also
+depends on additional supplemental data files, for example for line counts, and
+metadata on generated ISA specifications. We also provide cached copies, and
+optional instructions on how to reproduce them.
 
 From inside the container, change into the evaluation directory:
 ```
 cd /root/artifact/eval/
 ```
 
-Generate evaluation artifacts by running `make`. This runs a python script, `process.py`, to process the cached evaluation results and produce a series of output files:
+Generate evaluation artifacts by running `make`. This runs a python script,
+`process.py`, to process the cached evaluation results and produce a series of
+output files:
 ```
 make
 ```
 
-`process.py` writes results to the `generated` sub-directory. Note that the setup of `docker_run.sh` writes this directory to a mounted volume, so you can view the files in this directory either inside the Docker container, or outside of it, from your host machine (e.g., to view the PDF file more easily).
+`process.py` writes results to the `generated` sub-directory. Note that the
+setup of `docker_run.sh` writes this directory to a mounted volume, so you can
+view the files in this directory either inside the Docker container, or outside
+of it, from your host machine (e.g., to view the PDF file more easily).
 ```
 ls generated/
 ```
 
 Specifically:
 
-* `coverage.tex`: Compare to Table 1 in the paper. Verification results for selected Wasm-critical subset, as covered in the previous section for the CI results. When viewing results from the cached full run, you should see fewer timeouts than the CI run from before, as expected.
-* `specs.tex`: Compare to Table 2 in the paper. This is a count of the lines and numbers of specification, by category, that are required for the verification. `process.py` produces this file by combining JSON output from the verification run with metadata from the ISLE compiler and the ISA generation script on lines of specification code.
-* `timings.pdf`: Compare to Figure 5 in the paper. This is a cumulative distribution graph of verification times. `process.py` produces this file from the JSON output from the verification run.
-* `stats.tex`: This is computed statistics used in the paper, as LaTeX macros, used for statistics in the prose. There are many unused macros here, it's not important to check every one.
+* `coverage.tex`:
+  Compare to Table 1 in the paper. Verification results for selected
+  Wasm-critical subset, as covered in the previous section for the CI results.
+  When viewing results from the cached full run, you should see fewer timeouts
+  than the CI run from before, as expected.
+* `specs.tex`:
+  Compare to Table 2 in the paper. This is a count of the lines and numbers of
+  specification, by category, that are required for the verification.
+  `process.py` produces this file by combining JSON output from the verification
+  run with metadata from the ISLE compiler and the ISA generation script on
+  lines of specification code.
+* `timings.pdf`:
+  Compare to Figure 5 in the paper. This is a cumulative distribution graph of
+  verification times. `process.py` produces this file from the JSON output from
+  the verification run.
+* `stats.tex`:
+  This is computed statistics used in the paper, as LaTeX macros, used for
+  statistics in the prose. There are many unused macros here, it's not important
+  to check every one.
 
 #### Optional: Review Additional Output Files
 
-`process.py` also generates the following auxiliary files, which are referenced indirectly in the paper prose.
+`process.py` also generates the following auxiliary files, which are referenced
+indirectly in the paper prose.
+
 * `slow.tsv`: Expansions that were slow to verify.
 * `timeouts.tsv`: Expansions that timed out.
 * `terms.tsv`: Terms involved in the verification and their metadata.
@@ -413,9 +451,15 @@ The `/root/artifact/eval/data/` directory contains supplemental data files
 needed by the analysis. For completeness, we list below how each one can be
 re-generated.
 
-* `spec_lines.tsv`: ISLE line count information. Generated by running `./script/spec_lines.sh` from `/root/arrival/cranelift/isle/veri/veri` directory.
-* `generated_isle_files.txt`: list of ISLE generated files. Generated by running `./script/generated_isle_files.sh` from the `/root/arrival/cranelift/isle/veri/veri` directory.
-* `isaspec_generate.txt`: log output from ISA spec generation we ran above. Generated by running `./script/generate.sh -l` from the `/root/arrival/cranelift/isle/veri/isaspec` directory.
+* `spec_lines.tsv`: ISLE line count information.
+  Generated by running `./script/spec_lines.sh` from
+  `/root/arrival/cranelift/isle/veri/veri` directory.
+* `generated_isle_files.txt`: list of ISLE generated files.
+  Generated by running `./script/generated_isle_files.sh` from the
+  `/root/arrival/cranelift/isle/veri/veri` directory.
+* `isaspec_generate.txt`: log output from ISA spec generation we ran above.
+  Generated by running `./script/generate.sh -l` from the
+  `/root/arrival/cranelift/isle/veri/isaspec` directory.
 
 ### Optional: Full Verification Runs [est. 12+ hours]
 
@@ -455,7 +499,8 @@ IDs. It should look something like the following:
 2025-07-01T18:35:53-ci
 ```
 
-Generate evaluation artifacts by running `make`, which will pickup the arguments from `overrides.args`:
+Generate evaluation artifacts by running `make`, which will pickup the arguments
+from `overrides.args`:
 ```
 make
 ```
