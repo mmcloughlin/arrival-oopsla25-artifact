@@ -84,8 +84,8 @@ You can increase the Docker Desktop memory limit (e.g., to 4GB or 8GB) by follow
 Similarly, if you are running Docker within a virtual container or cloud instance, follow the instructions from that provider.
 
 [docker-mem]: https://docs.docker.com/config/containers/resource_constraints/
-[docker-mac]: https://docs.docker.com/desktop/mac/
-[docker-windows]: https://docs.docker.com/desktop/windows/
+[docker-mac]: https://docs.docker.com/desktop/setup/install/mac-install/
+[docker-windows]: https://docs.docker.com/desktop/setup/install/windows-install/
 
 We also suggest increasing the cores available to Docker to as many as your machine supports, ideally at least 8.
 
