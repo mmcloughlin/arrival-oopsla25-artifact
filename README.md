@@ -388,7 +388,7 @@ Generate evaluation artifacts by running `make`. This runs a python script, `pro
 make
 ```
 
-`process.py` writes results to the `generated` sub-directory. Note that the setup of `docker_run.sh` writes this directory to a mounted volume, so you can view the files in this directory either inside the Docker container, or outside of it, from your host machine (e.g., to view the PDF file more easily). 
+`process.py` writes results to the `generated` sub-directory. Note that the setup of `docker_run.sh` writes this directory to a mounted volume, so you can view the files in this directory either inside the Docker container, or outside of it, from your host machine (e.g., to view the PDF file more easily).
 ```
 ls generated/
 ```
