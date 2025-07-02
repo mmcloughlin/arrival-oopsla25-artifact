@@ -218,7 +218,7 @@ Then rerun verification against the `sdiv` rule:
 ./script/veri.sh -- --filter rule:sdiv
 ```
 
-You should now see verification succeed.
+You should now see verification succeed (larger bit widths may time out).
 
 ### Verify AArch64 Instruction Selection Rules [est. 15-60 mins]
 
@@ -235,8 +235,8 @@ the verification run (`-n artifact`), enable CI mode (`-c`) and use a timeout of
 60 seconds (`-t 60`).
 
 This command will take a while to run. More cores will help, since Arrival
-processes expansions in parallel. On the x86 machines we tested, this took
-between 10 and 60 minutes.
+processes expansions in parallel. On the x86 machines we tested (up to 24
+cores), this took between 10 and 60 minutes.
 
 While this is running you should see log output as it processes expansions, for
 example:
@@ -490,8 +490,8 @@ From inside the container, change into the evaluation directory:
 cd /root/artifact/eval/
 ```
 
-Edit the `overrides.args` arguments file to point the evaluation at the new Run
-IDs. It should look something like the following:
+Edit the `overrides.args` arguments file (outside the container) to point the
+evaluation at the new Run IDs. It should look something like the following:
 ```
 --run-id
 2025-07-01T05:32:13-full
