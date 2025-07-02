@@ -1,5 +1,7 @@
 # Artifact Evaluation: Scaling Instruction-Selection Verification with Authoritative ISA Semantics in an Industrial WebAssembly Compiler
 
+Archive: [10.5281/zenodo.15788021](https://doi.org/10.5281/zenodo.15788021)
+
 Artifact instructions [best viewed on Github](https://github.com/mmcloughlin/arrival-oopsla25-artifact/tree/v1).
 
 ## Introduction
