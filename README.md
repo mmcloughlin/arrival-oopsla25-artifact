@@ -251,7 +251,7 @@ Your Run ID should look something like `2025-06-24T03:02:28-artifact`.
 #### Analysis
 
 Below we will see how to fully analyze verification runs to produce the paper's
-results, but for now lets see how to post-process this verification run alone.
+results, but for now let's see how to post-process this verification run alone.
 
 In the container, change into the evaluation directory:
 ```
@@ -383,12 +383,12 @@ From inside the container, change into the evaluation directory:
 cd /root/artifact/eval/
 ```
 
-Generate evaluation artifacts by running `make`:
+Generate evaluation artifacts by running `make`. This runs a python script, `process.py`, to process the cached evaluation results and produce a series of output files:
 ```
 make
 ```
 
-Results should be written to the `generated` sub-directory:
+`process.py` writes results to the `generated` sub-directory. Note that the setup of `docker_run.sh` writes this directory to a mounted volume, so you can view the files in this directory either inside the Docker container, or outside of it, from your host machine (e.g., to view the PDF file more easily). 
 ```
 ls generated/
 ```
