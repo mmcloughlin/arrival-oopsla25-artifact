@@ -109,6 +109,8 @@ We recommend connecting to the running Docker instance in [VSCode][] or another 
 [vscode]: https://code.visualstudio.com
 [VSCode attach container]: https://code.visualstudio.com/docs/devcontainers/attach-container
 
+#### Verify an Instruction Lowering [est. 5 minutes]
+
 To verify a simple lowering of the integer addition `iadd` instruction, execute within the container:
 ```
 ./script/veri.sh -- --filter rule:iadd_base_case
