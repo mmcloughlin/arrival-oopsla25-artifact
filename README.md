@@ -41,7 +41,7 @@ Claims in the paper supported by this artifact:
 ## Hardware Dependencies
 
 This artifact requires a single x86 host machine for the best Docker performance
-(we have tested it on an aarch64 M2 MacBook and the instructions all work, but
+(we have tested it on an AArch64 M2 MacBook and the instructions all work, but
 due to poor virtualization performance with Docker, the CI run takes ~4 hours
 compared to ~10-60 minutes on the x86 machines we've tested).  While there is no
 strict requirement for many cores, the Arrival verifier parallelizes over
