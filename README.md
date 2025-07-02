@@ -1,5 +1,7 @@
 # Artifact Evaluation: Scaling Instruction-Selection Verification with Authoritative ISA Semantics in an Industrial WebAssembly Compiler
 
+Artifact instructions [best viewed on Github](https://github.com/mmcloughlin/arrival-oopsla25-artifact/blob/main/README.md).
+
 ## Introduction
 
 Artifact accompanying our OOPSLA 2025 paper "Scaling Instruction-Selection
