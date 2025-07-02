@@ -420,11 +420,11 @@ def compute_percent_fully_verified_rules(report):
 Row = namedtuple("Row", ["name", "stats"])
 
 
-def build_coverage_table(report):
+def build_coverage_table(report, *, compact=False):
     ROW_DEFINITIONS = [
         ("Memory", include_mem),
         ("Float", include_float),
-        ("Rest (Integer etc.)", exclude_float_mem),
+        ("Rest" if compact else "Rest (Integer etc.)", exclude_float_mem),
         ("Total", include_all),
     ]
     return list(
@@ -493,7 +493,7 @@ def write_coverage_table_tabulate(rows):
 
 
 def command_coverage(report, opts):
-    rows = build_coverage_table(report)
+    rows = build_coverage_table(report, compact=opts.ascii)
     if opts.ascii:
         write_coverage_table_tabulate(rows)
     else:
