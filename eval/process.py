@@ -697,6 +697,11 @@ def report_stats(report):
 
     stat_macros.append(
         stat_macro_ratio_percent(
+            "percentverified", summary.success, summary.type_instantiations
+        )
+    )
+    stat_macros.append(
+        stat_macro_ratio_percent(
             "percenttimeout", summary.unknown, summary.type_instantiations
         )
     )
