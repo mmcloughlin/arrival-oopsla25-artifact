@@ -28,7 +28,7 @@ def data_dir():
 
 
 def eval_data_dir():
-    """Path to checkout of https://github.com/mmcloughlin/veriisle-data"""
+    """Path to checkout of https://github.com/mmcloughlin/arrival-data"""
     eval_data_dir = os.getenv("EVAL_DATA_DIR")
     assert eval_data_dir, "EVAL_DATA_DIR must be set"
     return pathlib.Path(eval_data_dir)
