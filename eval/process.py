@@ -12,8 +12,8 @@ from enum import Enum, auto
 from dataclasses import dataclass
 from collections import Counter, namedtuple
 from tabulate import tabulate
+import matplotlib
 import matplotlib.pyplot as plt
-
 
 EVAL_RUN_ID = "2025-08-20T12:37:51-full"
 CI_RUN_ID = "2025-08-20T11:54:49-ci"
@@ -819,6 +819,10 @@ def command_timings(report, opts):
     tick_font_size = 10
     label_font_size = tick_font_size + 1
     axis_color = "#777"
+
+    # Fix fonts (settings recommended by HotCRP)
+    matplotlib.rcParams['pdf.fonttype'] = 42
+    matplotlib.rcParams['ps.fonttype'] = 42
 
     # Plot
     fig, ax = plt.subplots(figsize=(4, 2), constrained_layout=True)
