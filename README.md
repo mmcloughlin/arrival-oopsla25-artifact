@@ -1,4 +1,4 @@
-# Artifact Evaluation: Scaling Instruction-Selection Verification with Authoritative ISA Semantics in an Industrial WebAssembly Compiler
+# Artifact Evaluation: Scaling Instruction-Selection Verification Against Authoritative ISA Semantics
 
 Archive: [10.5281/zenodo.15788021](https://doi.org/10.5281/zenodo.15788021)
 
@@ -7,8 +7,7 @@ Artifact instructions [best viewed on Github](https://github.com/mmcloughlin/arr
 ## Introduction
 
 Artifact accompanying our OOPSLA 2025 paper "Scaling Instruction-Selection
-Verification with Authoritative ISA Semantics in an Industrial WebAssembly
-Compiler".
+Verification Against Authoritative ISA Semantics".
 
 Arrival is an instruction-selection verifier for the Cranelift production
 WebAssembly (Wasm) compiler.  Our work verifies nearly all of the AArch64
