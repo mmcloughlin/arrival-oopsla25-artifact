@@ -15,8 +15,8 @@ from tabulate import tabulate
 import matplotlib
 import matplotlib.pyplot as plt
 
-EVAL_RUN_ID = "2025-08-20T12:37:51-full"
-CI_RUN_ID = "2025-08-20T11:54:49-ci"
+EVAL_RUN_ID = "2025-08-21T16:12:05-full"
+CI_RUN_ID = "2025-08-21T15:56:47-ci"
 
 
 def self_dir():
