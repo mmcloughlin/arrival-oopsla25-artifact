@@ -2,7 +2,7 @@
 
 Archive: [10.5281/zenodo.15788021](https://doi.org/10.5281/zenodo.15788021)
 
-Artifact instructions [best viewed on Github](https://github.com/mmcloughlin/arrival-oopsla25-artifact/tree/v1).
+Artifact instructions [best viewed on Github](https://github.com/mmcloughlin/arrival-oopsla25-artifact/tree/v2).
 
 ## Introduction
 
@@ -526,7 +526,7 @@ difference in hardware, in particular you may see different rules timing out.
 
 Our core reusable artifact is the Arrival verifier.  Arrival is open-source as
 part of our fork of Wasmtime/Cranelift at
-[mmcloughlin/arrival](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact-v1).
+[mmcloughlin/arrival](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact-v2).
 
 The Arrival repository contains specifications required for our AArch64
 Wasm-critical subset, as well as exploratory work verifying
@@ -535,13 +535,13 @@ reuse these specifications and push for further verification coverage of
 Cranelift's ISLE backends.  To support such further work, we provide
 documentation on how to use the Arrival verifier:
 
-* [Getting Started Guide](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact-v1/cranelift/isle/veri/README.md)
-* [Specification Language Reference](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact-v1/cranelift/isle/veri/docs/language.md)
+* [Getting Started Guide](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact-v2/cranelift/isle/veri/README.md)
+* [Specification Language Reference](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact-v2/cranelift/isle/veri/docs/language.md)
 
 Our SymASLp fork of ASLp is public at
 [mmcloughlin/aslp](https://github.com/mmcloughlin/aslp).  The integration of
 Arrival with ASLp is part of our core reusable artifact in the Rust crate
-[cranelift/isle/veri/isaspec](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact-v1/cranelift/isle/veri/isaspec).
+[cranelift/isle/veri/isaspec](https://github.com/mmcloughlin/arrival/tree/oopsla25-artifact-v2/cranelift/isle/veri/isaspec).
 Developers can auto-generate Arrival specifications for additional families of
 AArch64 instructions by extending the [`instructions.rs`
-configuration](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact-v1/cranelift/isle/veri/isaspec/src/instructions.rs).
+configuration](https://github.com/mmcloughlin/arrival/blob/oopsla25-artifact-v2/cranelift/isle/veri/isaspec/src/instructions.rs).
