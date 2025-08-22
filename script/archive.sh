@@ -6,6 +6,9 @@ base="arrival-oopsla25-artifact"
 archive_file="${base}.zip"
 doc_file="${base}.pdf"
 
+# Confirm license is correct.
+diff LICENSE arrival/LICENSE
+
 # Setup output directory.
 output_dir="build"
 rm -rf "${output_dir}"
