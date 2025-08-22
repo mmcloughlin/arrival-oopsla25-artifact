@@ -1,6 +1,6 @@
 # Artifact Evaluation: Scaling Instruction-Selection Verification against Authoritative ISA Semantics
 
-Archive: [10.5281/zenodo.15788021](https://doi.org/10.5281/zenodo.15788021)
+Archive: [10.5281/zenodo.16929621](https://doi.org/10.5281/zenodo.16929621)
 
 Artifact instructions [best viewed on Github](https://github.com/mmcloughlin/arrival-oopsla25-artifact/tree/v2).
 
