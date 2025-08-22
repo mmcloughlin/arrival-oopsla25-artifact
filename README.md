@@ -242,9 +242,9 @@ processes expansions in parallel. On the x86 machines we tested (up to 24
 cores), this took between 10 and 60 minutes.
 
 It is possible that on weaker machines, the shorter timeout may cause the
-applicability check to fail. In this case, the verification run may halt with an
-error `could not prove applicability`. If so, try running again with a larger
-timeout, such as two minutes (`-t 120`) or more.
+applicability check to fail. In this case, the verification run may halt with
+an error: `could not prove applicability`. If so, try running again with a
+larger timeout, such as two minutes (`-t 120`) or more.
 
 While this is running you should see log output as it processes expansions, for
 example:
